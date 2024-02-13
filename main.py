@@ -1,6 +1,5 @@
 import pygame
 import neat
-import neat
 import os
 import math
 import sys
@@ -20,6 +19,8 @@ class Car(pygame.sprite.Sprite):
         self.drive_state = False
         self.vel_vector = pygame.math.Vector2(0.8, 0)
         self.angle = 0
+        self.rotation_vel = 5
+        self.direction = 0
 
     def update(self):
         self.drive()
@@ -29,7 +30,19 @@ class Car(pygame.sprite.Sprite):
             self.rect.center += self.vel_vector * 6
     
     def rotate(self):
+        # Turn Right
+        if self.direction == 1:
+            self.angle -= self.rotation_vel
+            # Changes velocity
+            self.vel_vector.rotate_ip(self.rotation_vel)
+        # Turn Left
+        if self.direction == -1:
+            self.angle += self.rotation_vel
+            # Changes velocity
+            self.vel_vector.rotate_ip(-self.rotation_vel)
+
         self.image = pygame.transform.rotozoom(self.original_image, self.angle, 0.1)
+        self.rect = self.image.get_rect(center=self.rect.center)
 car = pygame.sprite.GroupSingle(Car())
 
 # Main Loop
@@ -47,11 +60,17 @@ def eval_genomes():
         user_input = pygame.key.get_pressed()
         if sum(pygame.key.get_pressed()) <= 1:
             car.sprite.drive_state = False
+            car.sprite.direction = 0
         
         # Drive
         if user_input[pygame.K_UP]:
             car.sprite.drive_state = True
-        
+
+        # Steer
+        if user_input[pygame.K_RIGHT]:
+            car.sprite.direction = 1
+        if user_input[pygame.K_LEFT]:
+            car.sprite.direction = -1
         #Update
         car.draw(SCREEN)
         car.update()
