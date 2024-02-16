@@ -3,6 +3,7 @@ import neat
 import os
 import math
 import sys
+import time
 
 SCREEN_WIDTH = 1244
 SCREEN_HEIGHT = 1016
@@ -115,14 +116,17 @@ def eval_genomes(genomes, config):
         genome.fitness = 0
 
     run = True
+    start_time = time.time()
     while run:
+        end_time = time.time()
+        elapsed_time = end_time - start_time
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
         SCREEN.blit(TRACK, (0,0))
-        if len(cars) == 0:
+        if len(cars) == 0 or elapsed_time >= 60:
             break
         
         for i, car in enumerate(cars):
