@@ -46,8 +46,7 @@ class Car(pygame.sprite.Sprite):
         if SCREEN.get_at(collision_point_right) == pygame.Color(2, 105, 31, 255) \
             or SCREEN.get_at(collision_point_left) == pygame.Color(2, 105, 31, 255):
             self.alive = False
-            print("Crash")
-        
+                
         # Draw Collision Points
         pygame.draw.circle(SCREEN, (0, 255, 255, 0), collision_point_right, 4)
         pygame.draw.circle(SCREEN, (0, 255, 255, 0), collision_point_left, 4)
