@@ -9,7 +9,7 @@ SCREEN_WIDTH = 1244
 SCREEN_HEIGHT = 1016
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-TRACK = pygame.image.load(os.path.join("Assets", "track.png"))
+TRACK = pygame.image.load(os.path.join("Assets", "track2.png"))
 
 class Car(pygame.sprite.Sprite):
     def __init__(self):
@@ -72,21 +72,30 @@ class Car(pygame.sprite.Sprite):
         x = int(self.rect.center[0])
         y = int(self.rect.center[1])
 
-        while not SCREEN.get_at((x, y)) == pygame.Color(2, 105, 31, 255) and length < 200:
-            length += 1
+        while length < 200:
             # Calculate the endpoint of the radar
             x = int(self.rect.center[0] + math.cos(math.radians(self.angle + radar_angle)) * length)
             y = int(self.rect.center[1] - math.sin(math.radians(self.angle + radar_angle)) * length)
-        
+            
+            # Check if the calculated coordinates are within the screen boundaries
+            if 0 <= x < SCREEN_WIDTH and 0 <= y < SCREEN_HEIGHT:
+                # Check the color of the pixel at the calculated coordinates
+                if SCREEN.get_at((x, y)) == pygame.Color(2, 105, 31, 255):
+                    break  # Exit the loop if the pixel color matches the specified color
+            else:
+                break  # Exit the loop if the coordinates are out of bounds
+            
+            length += 1
+
         # Draw Radar
         # Straight line that connects to the car
         pygame.draw.line(SCREEN, (255,255,255,255), self.rect.center, (x,y), 1)
         # Dot
         pygame.draw.circle(SCREEN, (0,255,0,0), (x,y), 3)
         
-        dist = int(math.sqrt(math.pow(self.rect.center[0] - x, 2) + math.pow(self.rect.center[1] - y, 2))) # calaculates the center of the car to the tip of a line
+        dist = int(math.sqrt(math.pow(self.rect.center[0] - x, 2) + math.pow(self.rect.center[1] - y, 2))) # calculates the distance from the center of the car to the tip of the line
 
-        # Appends the data to the radar list
+        # Append the data to the radar list
         self.radars.append([radar_angle, dist])
 
     def data(self):
