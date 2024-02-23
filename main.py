@@ -117,6 +117,9 @@ def eval_genomes(genomes, config):
     ge = []
     nets = []
 
+    evolution_number = 0
+    start_time = time.time()
+
     for genome_id, genome in genomes:
         cars.append(pygame.sprite.GroupSingle(Car()))
         ge.append(genome)
@@ -125,7 +128,6 @@ def eval_genomes(genomes, config):
         genome.fitness = 0
 
     run = True
-    start_time = time.time()
     while run:
         end_time = time.time()
         elapsed_time = end_time - start_time
@@ -136,8 +138,12 @@ def eval_genomes(genomes, config):
 
         SCREEN.blit(TRACK, (0,0))
         if len(cars) == 0 or elapsed_time >= 60:
+            print("Activation Function Used:", config.genome_config.activation_default)
+            print("Total Time Taken:", elapsed_time)
+            print("Evolution Number:", evolution_number)
+            print("Remaining Cars:", len(cars))
             break
-        
+
         for i, car in enumerate(cars):
             ge[i].fitness += 1
             if not car.sprite.alive:
@@ -160,6 +166,8 @@ def eval_genomes(genomes, config):
             car.update()
 
         pygame.display.update()
+
+    evolution_number += 1
 
 # Set up NEAT Neural Network
 def run(config_path):
@@ -184,3 +192,4 @@ if __name__ == '__main__':
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config.txt')
     run(config_path)
+   
